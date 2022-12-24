@@ -1,0 +1,15 @@
+.nav {
+  position: relative;
+  padding-top: 10px;
+}
+.head {
+  margin: 0 auto;
+  width: fit-content;
+}
+.rightArrow {
+  position: absolute;
+  height: 30px;
+  cursor: pointer;
+  right: 10px;
+  top: 10px;
+}
