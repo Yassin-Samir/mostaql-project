@@ -1,23 +1,47 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useContext, useEffect, useCallback, useState, useRef } from "react";
+import { setDoc, doc, getDoc } from "firebase/firestore";
+import { useContext, useCallback, useState, useRef, useEffect } from "react";
 import { useRouter } from "next/router";
-import { setDoc, doc } from "firebase/firestore";
-import { RouteContext } from "../../../../contexts";
 import { FirebaseAppContext } from "../../../_app";
-import { uuidv4 } from "@firebase/util";
+import { RouteContext } from "../../../../contexts";
 import Head from "next/head";
 import Image from "next/image";
-import style from "../../../../styles/createRestaurant.module.css";
 import PreviewImg from "../../../../public/-Insert_image_here-.svg.png";
-function Create() {
+import style from "../../../../styles/createRestaurant.module.css";
+function Edit() {
   const [Base64Img, setBase64Img] = useState(PreviewImg);
-  const { push } = useRouter();
-  const { editRoute } = useContext(RouteContext);
+  const [document, setDocument] = useState({
+    Name: "",
+    Location: "",
+    Img: "",
+    id: "",
+  });
+  const {
+    query: { id },
+    isReady,
+    push,
+  } = useRouter();
   const { db } = useContext(FirebaseAppContext);
-  const NameRef = useRef();
+  const { editRoute } = useContext(RouteContext);
   const LocationRef = useRef();
+  const NameRef = useRef();
   const submitRef = useRef();
-  useEffect(() => editRoute("انشاء مطعم"), []);
+  useEffect(() => {
+    if (!isReady) return;
+    editRoute("تعديل تنقل");
+    const documentRef = doc(db, "transport", id);
+    (async () => {
+      try {
+        const docSnap = await getDoc(documentRef);
+        const { Img, Name, Location } = docSnap.data();
+        setDocument({ ...docSnap.data() });
+        setBase64Img(Img);
+        NameRef.current.value = Name;
+        LocationRef.current.value = Location;
+      } catch {
+        push("/404");
+      }
+    })();
+  }, [isReady, id]);
   const HandleInputChange = useCallback(({ target }) => {
     if (!target.files.length || !target.files[0].name?.match(/\.jpe?g/)) return;
     const Reader = new FileReader();
@@ -29,31 +53,35 @@ function Create() {
       e.preventDefault();
       const { value: Location } = LocationRef.current;
       const { value: Name } = NameRef.current;
-      if (!Location || !Name || Base64Img === PreviewImg) {
+      if (
+        Location === document.Location &&
+        Name === document.Name &&
+        Base64Img === document.Img
+      ) {
         submitRef.current.classList.add(style.shake);
         setTimeout(() => submitRef.current.classList.remove(style.shake), 200);
         return;
       }
       try {
-        const id = uuidv4();
-        const docRef = doc(db, "restaurants", id);
+        const { id } = document;
+        const docRef = doc(db, "transport", id);
         setDoc(docRef, {
           Img: Base64Img,
           Name,
           Location,
           id,
         });
-        push("/places/restaurants");
+        push("/places/transport");
       } catch (error) {
         alert("please try again");
       }
     },
-    [Base64Img]
+    [Base64Img, document.Location, document.Name, document.Img, document.id]
   );
   return (
     <>
       <Head>
-        <title>Create a restaurant</title>
+        <title>edit a restaurant</title>
       </Head>
       <form onSubmit={handleSubmit}>
         <div className={style.Container}>
@@ -87,4 +115,4 @@ function Create() {
     </>
   );
 }
-export default Create;
+export default Edit;

@@ -5,7 +5,7 @@ import { FirebaseAppContext } from "../../../_app";
 import { RouteContext } from "../../../../contexts";
 import Head from "next/head";
 import Image from "next/image";
-import PreviewImg from "../-Insert_image_here-.svg.png";
+import PreviewImg from "../../../../public/-Insert_image_here-.svg.png";
 import style from "../../../../styles/createRestaurant.module.css";
 function Edit() {
   const [Base64Img, setBase64Img] = useState(PreviewImg);
@@ -28,7 +28,7 @@ function Edit() {
   useEffect(() => {
     if (!isReady) return;
     editRoute("تعديل مطعم");
-    const documentRef = doc(db, "restraurants", id);
+    const documentRef = doc(db, "restaurants", id);
     (async () => {
       try {
         const docSnap = await getDoc(documentRef);
@@ -64,7 +64,7 @@ function Edit() {
       }
       try {
         const { id } = document;
-        const docRef = doc(db, "restraurants", id);
+        const docRef = doc(db, "restaurants", id);
         setDoc(docRef, {
           Img: Base64Img,
           Name,

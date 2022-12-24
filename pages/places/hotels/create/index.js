@@ -7,8 +7,8 @@ import { FirebaseAppContext } from "../../../_app";
 import { uuidv4 } from "@firebase/util";
 import Head from "next/head";
 import Image from "next/image";
-import style from "../../../../styles/createRestaurant.module.css";
 import PreviewImg from "../../../../public/-Insert_image_here-.svg.png";
+import style from "../../../../styles/createRestaurant.module.css";
 function Create() {
   const [Base64Img, setBase64Img] = useState(PreviewImg);
   const { push } = useRouter();
@@ -17,7 +17,7 @@ function Create() {
   const NameRef = useRef();
   const LocationRef = useRef();
   const submitRef = useRef();
-  useEffect(() => editRoute("انشاء مطعم"), []);
+  useEffect(() => editRoute("انشاء فندق"), []);
   const HandleInputChange = useCallback(({ target }) => {
     if (!target.files.length || !target.files[0].name?.match(/\.jpe?g/)) return;
     const Reader = new FileReader();
@@ -36,14 +36,14 @@ function Create() {
       }
       try {
         const id = uuidv4();
-        const docRef = doc(db, "restaurants", id);
+        const docRef = doc(db, "hotels", id);
         setDoc(docRef, {
           Img: Base64Img,
           Name,
           Location,
           id,
         });
-        push("/places/restaurants");
+        push("/places/hotels");
       } catch (error) {
         alert("please try again");
       }
@@ -53,7 +53,7 @@ function Create() {
   return (
     <>
       <Head>
-        <title>Create a restaurant</title>
+        <title>Create an hotel</title>
       </Head>
       <form onSubmit={handleSubmit}>
         <div className={style.Container}>

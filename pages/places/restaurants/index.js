@@ -14,7 +14,7 @@ function Restaurants() {
   useEffect(() => editRoute("المطاعم"), []);
   const restaurantsRef = useMemo(() => {
     if (!isReady || !app || !db) return;
-    const restaurantsRef = collection(db, "restraurants");
+    const restaurantsRef = collection(db, "restaurants");
     return restaurantsRef;
   }, [isReady, app._automaticDataCollectionEnabled]);
   const [restaurants] = useCollectionData(restaurantsRef);

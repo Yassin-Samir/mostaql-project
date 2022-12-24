@@ -14,7 +14,7 @@ function Restaurant({ Img, Location, Name, id }) {
   const SetOptionFunction = useCallback((prev) => !prev, []);
   const DeleteDoc = useCallback(() => {
     try {
-      deleteDoc(doc(db, "restraurants", id));
+      deleteDoc(doc(db, path.replace(/([^/?]+)\/+/, "").replace(/\//, ""), id));
       setOption(SetOptionFunction);
     } catch (error) {
       console.log("err", error);
