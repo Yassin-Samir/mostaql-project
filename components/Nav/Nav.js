@@ -16,9 +16,9 @@ function Nav() {
             viewBox="0 0 448 512"
             onClick={() => {
               push(
-                path.match(/\d+-/)
-                  ? "/places/restaurants"
-                  : path.replace(/\/[a-zA-Z]+$/, "") || "/"
+                path === "/places"
+                  ? "/"
+                  : path.substring(0, path.lastIndexOf("/"))
               );
             }}
             className={styles.rightArrow}

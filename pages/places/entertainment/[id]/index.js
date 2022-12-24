@@ -26,7 +26,7 @@ function Edit() {
   const NameRef = useRef();
   const submitRef = useRef();
   useEffect(() => {
-    if (!isReady) return;
+    if (!isReady || !id) return;
     editRoute("تعديل ترفيه");
     const documentRef = doc(db, "entertainment", id);
     (async () => {
@@ -43,7 +43,11 @@ function Edit() {
     })();
   }, [isReady, id]);
   const HandleInputChange = useCallback(({ target }) => {
-    if (!target.files.length || !target.files[0].name?.match(/\.jpe?g/)) return;
+    if (!target.files.length) return;
+    if (!target.files[0].name?.match(/\.jpe?g/)) {
+      alert("wrong file format was provided accept jpg or jpeg");
+      return;
+    }
     const Reader = new FileReader();
     Reader.onload = ({ target: { result } }) => setBase64Img(result);
     Reader.readAsDataURL(target.files[0]);
@@ -83,35 +87,39 @@ function Edit() {
       <Head>
         <title>edit a restaurant</title>
       </Head>
-      <form onSubmit={handleSubmit}>
-        <div className={style.Container}>
-          <div>
-            <Image
-              className={style.previewImg}
-              src={Base64Img}
-              alt="insert a picture"
-              width={100}
-              height={100}
+      {document.Name ? (
+        <form onSubmit={handleSubmit}>
+          <div className={style.Container}>
+            <div>
+              <Image
+                className={style.previewImg}
+                src={Base64Img}
+                alt="insert a picture"
+                width={100}
+                height={100}
+              />
+              <input
+                type={"file"}
+                accept={"image/jpeg"}
+                onChange={HandleInputChange}
+              />
+            </div>
+            <input
+              type={"text"}
+              ref={NameRef}
+              placeholder={"insert the name of the restaurant"}
             />
             <input
-              type={"file"}
-              accept={"image/jpeg"}
-              onChange={HandleInputChange}
+              type={"text"}
+              ref={LocationRef}
+              placeholder={"insert the location of the restaurant"}
             />
+            <input type={"submit"} ref={submitRef} />
           </div>
-          <input
-            type={"text"}
-            ref={NameRef}
-            placeholder={"insert the name of the restaurant"}
-          />
-          <input
-            type={"text"}
-            ref={LocationRef}
-            placeholder={"insert the location of the restaurant"}
-          />
-          <input type={"submit"} ref={submitRef} />
-        </div>
-      </form>
+        </form>
+      ) : (
+        <div className="spinner"></div>
+      )}
     </>
   );
 }

@@ -83,35 +83,39 @@ function Edit() {
       <Head>
         <title>edit a restaurant</title>
       </Head>
-      <form onSubmit={handleSubmit}>
-        <div className={style.Container}>
-          <div>
-            <Image
-              className={style.previewImg}
-              src={Base64Img}
-              alt="insert a picture"
-              width={100}
-              height={100}
+      {document.Name ? (
+        <form onSubmit={handleSubmit}>
+          <div className={style.Container}>
+            <div>
+              <Image
+                className={style.previewImg}
+                src={Base64Img}
+                alt="insert a picture"
+                width={100}
+                height={100}
+              />
+              <input
+                type={"file"}
+                accept={"image/jpeg"}
+                onChange={HandleInputChange}
+              />
+            </div>
+            <input
+              type={"text"}
+              ref={NameRef}
+              placeholder={"insert the name of the restaurant"}
             />
             <input
-              type={"file"}
-              accept={"image/jpeg"}
-              onChange={HandleInputChange}
+              type={"text"}
+              ref={LocationRef}
+              placeholder={"insert the location of the restaurant"}
             />
+            <input type={"submit"} ref={submitRef} />
           </div>
-          <input
-            type={"text"}
-            ref={NameRef}
-            placeholder={"insert the name of the restaurant"}
-          />
-          <input
-            type={"text"}
-            ref={LocationRef}
-            placeholder={"insert the location of the restaurant"}
-          />
-          <input type={"submit"} ref={submitRef} />
-        </div>
-      </form>
+        </form>
+      ) : (
+        <div className="spinner"></div>
+      )}
     </>
   );
 }
