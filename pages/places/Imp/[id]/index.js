@@ -1,5 +1,13 @@
 import { setDoc, doc, getDoc } from "firebase/firestore";
-import { useContext, useCallback, useState, useRef, useEffect } from "react";
+import {
+  useContext,
+  useCallback,
+  useState,
+  createRef,
+  useEffect,
+  useMemo,
+  Suspense,
+} from "react";
 import { useRouter } from "next/router";
 import { FirebaseAppContext } from "../../../_app";
 import { RouteContext } from "../../../../contexts";
@@ -22,26 +30,25 @@ function Edit() {
   } = useRouter();
   const { db } = useContext(FirebaseAppContext);
   const { editRoute } = useContext(RouteContext);
-  const LocationRef = useRef();
-  const NameRef = useRef();
-  const submitRef = useRef();
+  const LocationRef = useMemo(() => createRef(), []);
+  const NameRef = useMemo(() => createRef(), []);
+  const submitRef = useMemo(() => createRef(), []);
   useEffect(() => {
-    if (!isReady) return;
     editRoute("تعديل عنوان");
+    if (!isReady || !id || !(LocationRef || submitRef || NameRef).current)
+      return;
     const documentRef = doc(db, "Imp", id);
     (async () => {
-      try {
-        const docSnap = await getDoc(documentRef);
-        const { Img, Name, Location } = docSnap.data();
-        setDocument({ ...docSnap.data() });
-        setBase64Img(Img);
-        NameRef.current.value = Name;
-        LocationRef.current.value = Location;
-      } catch {
-        push("/404");
-      }
+      const docSnap = await getDoc(documentRef);
+      const DocData = docSnap.data();
+      if (!DocData) push("/404");
+      const { Img, Name, Location } = DocData;
+      setDocument({ ...DocData });
+      setBase64Img(Img);
+      NameRef.current.value = Name;
+      LocationRef.current.value = Location;
     })();
-  }, [isReady, id]);
+  }, [isReady, id, LocationRef.current, NameRef.current, submitRef.current]);
   const HandleInputChange = useCallback(({ target }) => {
     if (!target.files.length || !target.files[0].name?.match(/\.jpe?g/)) return;
     const Reader = new FileReader();
@@ -60,6 +67,7 @@ function Edit() {
       ) {
         submitRef.current.classList.add(style.shake);
         setTimeout(() => submitRef.current.classList.remove(style.shake), 200);
+        alert("please change the input fields");
         return;
       }
       try {
@@ -83,7 +91,7 @@ function Edit() {
       <Head>
         <title>edit a restaurant</title>
       </Head>
-      {document.Name ? (
+      <Suspense fallback={<div className="spinner"></div>}>
         <form onSubmit={handleSubmit}>
           <div className={style.Container}>
             <div>
@@ -102,20 +110,18 @@ function Edit() {
             </div>
             <input
               type={"text"}
-              ref={NameRef}
+              ref={(ref) => (NameRef.current = ref)}
               placeholder={"insert the name of the restaurant"}
             />
             <input
               type={"text"}
-              ref={LocationRef}
+              ref={(ref) => (LocationRef.current = ref)}
               placeholder={"insert the location of the restaurant"}
             />
-            <input type={"submit"} ref={submitRef} />
+            <input type={"submit"} ref={(ref) => (submitRef.current = ref)} />
           </div>
         </form>
-      ) : (
-        <div className="spinner"></div>
-      )}
+      </Suspense>
     </>
   );
 }

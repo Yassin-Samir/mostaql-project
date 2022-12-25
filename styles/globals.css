@@ -30,8 +30,8 @@ a {
   -o-border-radius: 50%;
   justify-self: center;
   align-self: center;
-  animation: spin 1s linear 0 infinite;
-  -webkit-animation: spin 1s linear 0 infinite;
+  animation: spin 1s linear 0s infinite;
+  -webkit-animation: spin 1s linear 0s infinite;
 }
 @keyframes spin {
   0% {
