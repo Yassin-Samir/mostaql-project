@@ -1,5 +1,5 @@
-import { CreatePlace } from "../../../../components";
+import { CreatePlacePage } from "../../../../components";
 const Create = () => (
-  <CreatePlace NavRoute={"ترفيه"} collectionName="entertainment" />
+  <CreatePlacePage NavRoute={"ترفيه"} collectionName={"entertainment"} />
 );
 export default Create;
