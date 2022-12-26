@@ -1,4 +1,4 @@
-.restaurant {
+.place {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -71,7 +71,7 @@
   font-size: 0.5rem;
   color: gray;
 }
-.restaurantImg {
+.placeImg {
   width: 25px;
   height: 25px;
   border-radius: 3px;

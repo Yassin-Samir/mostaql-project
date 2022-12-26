@@ -3,9 +3,17 @@ import { useRouter } from "next/navigation";
 function LinkComponent({ children, Route }) {
   const { push } = useRouter();
   return (
-    <div className={Styles.link} onClick={() => push(`/${Route}`)}>
-      {children}
-    </div>
+    <a href={`/${Route}`} onClick={(e) => e.preventDefault()}>
+      <div
+        className={Styles.link}
+        onClick={(e) => {
+          e.preventDefault();
+          push(`/${Route}`);
+        }}
+      >
+        {children}
+      </div>
+    </a>
   );
 }
 export default LinkComponent;

@@ -3,25 +3,32 @@ import { memo, useState, useCallback, useContext } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { FirebaseAppContext } from "../../pages/_app";
 import { doc, deleteDoc } from "firebase/firestore";
-import style from "./restraurant.module.css";
+import style from "./place.module.css";
 import Image from "next/image";
 import More from "./more.png";
-function Restaurant({ Img, Location, Name, id }) {
+function Place({ Img, Location, Name, id }) {
   const [option, setOption] = useState(false);
   const { db } = useContext(FirebaseAppContext);
   const { push } = useRouter();
   const path = usePathname();
   const SetOptionFunction = useCallback((prev) => !prev, []);
-  const DeleteDoc = useCallback(() => {
-    try {
-      deleteDoc(doc(db, path.replace(/([^/?]+)\/+/, "").replace(/\//, ""), id));
-      setOption(SetOptionFunction);
-    } catch (error) {
-      console.log("err", error);
-    }
-  }, [id]);
+  const DeleteDoc = useCallback(
+    (e) => {
+      e.preventDefault();
+      try {
+        deleteDoc(
+          doc(db, path.replace(/([^/?]+)\/+/, "").replace(/\//, ""), id)
+        );
+        setOption(SetOptionFunction);
+      } catch (error) {
+        alert("failed to delete please try again");
+        console.log("err", error);
+      }
+    },
+    [id]
+  );
   return (
-    <div className={style.restaurant}>
+    <div className={style.place}>
       <Image
         className={style.more}
         src={More}
@@ -29,17 +36,24 @@ function Restaurant({ Img, Location, Name, id }) {
         onClick={() => setOption(SetOptionFunction)}
       />
       <div className={`${style.options} ${option ? style.view : style.hide}`}>
-        <p onClick={() => push(`${path}/${id}`)}>تعديل</p>
+        <p
+          onClick={(e) => {
+            e.preventDefault();
+            push(`${path}/${id}`);
+          }}
+        >
+          تعديل
+        </p>
         <p onClick={DeleteDoc}>اخفاء</p>
       </div>
       <div className={style.information}>
         <h6>{Name}</h6>
         <Image
-          src={Img}
-          alt="restaurant Img"
+          src={Img[0].length > 1 ? Img[0] : Img}
+          alt="place Img"
           width={100}
           height={100}
-          className={style.restaurantImg}
+          className={style.placeImg}
         />
         <div>
           <p className={style.address}>{Location}</p>
@@ -58,4 +72,4 @@ function Restaurant({ Img, Location, Name, id }) {
     </div>
   );
 }
-export default memo(Restaurant);
+export default memo(Place);

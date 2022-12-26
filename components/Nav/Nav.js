@@ -1,11 +1,30 @@
 import { usePathname, useRouter } from "next/navigation";
-import { useContext } from "react";
+import { useContext, useCallback, useMemo } from "react";
 import { RouteContext } from "../../contexts";
-import styles from "./Nav.module.css";
+import styles from "../styles/Nav.module.css";
 function Nav() {
   const path = usePathname();
   const { push } = useRouter();
   const { route } = useContext(RouteContext);
+  const RepeatedNumbersOfASpecialCharacter = useCallback(
+    (str = "", ch = "") => {
+      let NumberOfRepeatedCharacters = 0;
+      for (let i = 0; i < str.length; i++) {
+        if (str[i] !== ch) continue;
+        NumberOfRepeatedCharacters++;
+      }
+      return NumberOfRepeatedCharacters;
+    },
+    []
+  );
+  const NumberOfSlashesInARoute = useMemo(
+    () => {
+      if (!path) return;
+      const number = RepeatedNumbersOfASpecialCharacter(path, "/");
+      return number;
+    },
+    [path]
+  );
   return (
     <nav className={styles.nav}>
       {path !== "/" && (
@@ -14,9 +33,10 @@ function Nav() {
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 448 512"
-            onClick={() => {
+            onClick={(e) => {
+              e.preventDefault();
               push(
-                path === "/places"
+                NumberOfSlashesInARoute === 1
                   ? "/"
                   : path.substring(0, path.lastIndexOf("/"))
               );

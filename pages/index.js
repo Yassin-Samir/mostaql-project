@@ -10,9 +10,9 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <LinkComponent Route={"places"}>الاماكن</LinkComponent>
-      <LinkComponent Route={"tours"}>الخطط السياحية</LinkComponent>
+      <LinkComponent Route={"tourism-plans"}>الخطط السياحية</LinkComponent>
       <LinkComponent Route={"events"}>الاحداث</LinkComponent>
-      <LinkComponent Route={"artCulture"}>ثقافة وفن</LinkComponent>
+      <LinkComponent Route={"art-culture"}>ثقافة وفن</LinkComponent>
     </>
   );
 }

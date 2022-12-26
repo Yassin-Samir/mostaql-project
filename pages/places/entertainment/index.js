@@ -1,34 +1,10 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useContext, useEffect, useMemo } from "react";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { collection } from "firebase/firestore";
-import { useCollectionData } from "react-firebase-hooks/firestore";
-import { FirebaseAppContext } from "../../_app";
-import { RouteContext } from "../../../contexts";
-import { Restaurant, LinkComponent } from "../../../components";
-function Entertainments() {
-  const { isReady, pathname } = useRouter();
-  const { editRoute } = useContext(RouteContext);
-  const { app, db } = useContext(FirebaseAppContext);
-  useEffect(() => editRoute("ترفيه"), []);
-  const entertainmentsRef = useMemo(() => {
-    if (!isReady || !app || !db) return;
-    const entertainmentsRef = collection(db, "entertainment");
-    return entertainmentsRef;
-  }, [isReady, app._automaticDataCollectionEnabled]);
-  const [entertainments] = useCollectionData(entertainmentsRef);
-  return (
-    <>
-      <Head>
-        <title>entertainments</title>
-      </Head>
-      {entertainments &&
-        entertainments.map((i, ind) => <Restaurant {...i} key={ind + 1} />)}
-      <LinkComponent Route={`${pathname.replace(/\//, "")}/create`}>
-        اضف
-      </LinkComponent>
-    </>
-  );
-}
-export default Entertainments;
+import { MainPage } from "../../../components";
+const EntertainmentPage = () => (
+  <MainPage
+    NavRoute={"ترفيه"}
+    title={"entertainments"}
+    collectionName={"entertainment"}
+  />
+);
+
+export default EntertainmentPage;

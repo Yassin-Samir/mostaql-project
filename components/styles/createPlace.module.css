@@ -14,6 +14,27 @@
   outline: none;
   padding: 0 5px;
 }
+.inputImgContainer {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.inputBtn {
+  background-color: #eee;
+  cursor: pointer;
+  padding: 5px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}
+.fileImgInput {
+  visibility: hidden;
+  width: 0 !important;
+}
 .shake {
   animation: shake 0.2s;
   border: 2px solid red;
