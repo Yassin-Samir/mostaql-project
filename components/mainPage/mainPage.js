@@ -15,11 +15,12 @@ function MainPage({ collectionName, NavRoute, title, PlacesType }) {
   const PlacesQuery = useMemo(() => {
     if (!isReady || !app || !db) return;
     const placesRef = collection(db, collectionName || "places");
-    const PlacesQuery = query(
-      placesRef,
-      where("PlacesToShow", "array-contains", { key: PlacesType })
-    );
-    return PlacesQuery;
+    return PlacesType
+      ? query(
+          placesRef,
+          where("PlacesToShow", "array-contains", { key: PlacesType })
+        )
+      : placesRef;
   }, [isReady, app._automaticDataCollectionEnabled]);
   const [places] = useCollectionData(PlacesQuery);
   console.log(places);

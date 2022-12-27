@@ -55,6 +55,7 @@ function EditEvent() {
       const { Img, description, Location, Link, color } = DocData;
       setDocument({ ...DocData });
       setImg(Img);
+      console.log(DocData);
       setSelectedDiv(color);
       descriptionRef.current.value = description;
       LinkRef.current.value = Link;

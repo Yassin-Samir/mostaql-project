@@ -169,7 +169,7 @@ function EditTourismPlan() {
     try {
       const docRef = doc(db, "tourism-plans", id);
       setDoc(docRef, {
-        Img: document.Img,
+        Img,
         id: document.id,
         Location: locationRef.current.value,
         description: descriptionRef.current.value,

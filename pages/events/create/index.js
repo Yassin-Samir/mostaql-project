@@ -76,7 +76,7 @@ function CreateEvent() {
           <div className={style.inputImgContainer} style={{ width: "100%" }}>
             <label
               htmlFor="img1"
-              className={`${style.ImginputBtn} ${style.imgPreviewer}`}
+              className={`${style.ImginputBtn} ${style.ImgPreviewer}`}
             >
               <div ref={imgPreviewerRef}>اضف صورة</div>
               <Image

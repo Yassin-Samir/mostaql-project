@@ -12,16 +12,13 @@ function Place({ Img, Location, Name, id }) {
   const { push } = useRouter();
   const path = usePathname();
   const SetOptionFunction = useCallback((prev) => !prev, []);
+  console.log(path.replace(/([^/?]+)\/+/, "").replace(/\//, ""));
   const DeleteDoc = useCallback(
     (e) => {
       e.preventDefault();
       try {
         deleteDoc(
-          doc(
-            db,
-            doc(db, path.replace(/([^/?]+)\/+/, "").replace(/\//, ""), id),
-            id
-          )
+          doc(db, path.replace(/([^/?]+)\/+/, "").replace(/\//, ""), id)
         );
         setOption(SetOptionFunction);
       } catch (error) {
