@@ -30,6 +30,9 @@ function Places() {
       <LinkComponent Route={`${pathName.replace(/\//, "")}/transport`}>
         تنقل
       </LinkComponent>
+      <LinkComponent Route={`${pathName.replace(/\//, "")}/create`}>
+        انشاء مكان
+      </LinkComponent>
     </>
   );
 }

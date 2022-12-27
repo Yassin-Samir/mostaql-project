@@ -16,9 +16,7 @@ function Place({ Img, Location, Name, id }) {
     (e) => {
       e.preventDefault();
       try {
-        deleteDoc(
-          doc(db, path.replace(/([^/?]+)\/+/, "").replace(/\//, ""), id)
-        );
+        deleteDoc(doc(db, "places", id));
         setOption(SetOptionFunction);
       } catch (error) {
         alert("failed to delete please try again");
@@ -39,7 +37,7 @@ function Place({ Img, Location, Name, id }) {
         <p
           onClick={(e) => {
             e.preventDefault();
-            push(`${path}/${id}`);
+            push(`/places/${id}`);
           }}
         >
           تعديل
