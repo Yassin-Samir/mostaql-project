@@ -55,6 +55,7 @@ function Edit({ NavRoute }) {
   const siteRef = useMemo(() => createRef(), []);
   const ratingRef = useMemo(() => createRef(), []);
   const submitRef = useMemo(() => createRef(), []);
+
   useEffect(() => {
     editRoute(`${NavRoute} تعديل`);
     if (
@@ -98,14 +99,8 @@ function Edit({ NavRoute }) {
       siteRef.current.value = site;
       ratingRef.current.value = rating;
       window.document.querySelectorAll("li input").forEach((ele) => {
-        console.log(
-          !PlacesToShow.filter((i) => i.key === ele.dataset.translatedvalue)
-            .length
-        );
-        if (
-          !PlacesToShow.filter((i) => i.key === ele.dataset.translatedvalue)
-            .length
-        ) {
+        console.log(!PlacesToShow.filter((i) => i.key === ele.value).length);
+        if (!PlacesToShow.filter((i) => i.key === ele.value).length) {
           return;
         }
         ele.checked = true;
@@ -138,18 +133,32 @@ function Edit({ NavRoute }) {
     Reader.readAsDataURL(target.files[0]);
   }, []);
   const handleInputChecked = useCallback(
-    ({
-      target: {
-        dataset: { translatedvalue },
-        checked,
-      },
-    }) =>
+    ({ target: { checked, value } }) =>
       setPlacesToShow((prev) =>
         checked
-          ? [...prev, { key: translatedvalue }]
-          : [...prev.filter((i) => i.key !== translatedvalue)]
+          ? [...prev, { key: value }]
+          : [...prev.filter((i) => i.key !== value)]
       ),
     []
+  );
+  const HasPlacesToShowChange = useCallback(
+    (placeToShow) => {
+      let state = false;
+      if (
+        placeToShow.length &&
+        placeToShow.length !== document.PlacesToShow.length
+      )
+        return true;
+
+      for (let index = 0; index < placeToShow.length; index++) {
+        const element = placeToShow[index];
+        if (element.key === document.PlacesToShow[index].key) continue;
+        state = true;
+        break;
+      }
+      return state;
+    },
+    [document.PlacesToShow.length]
   );
   const handleSubmit = useCallback(
     (e) => {
@@ -161,6 +170,7 @@ function Edit({ NavRoute }) {
       const { value: phoneNum } = phoneNumRef.current;
       const { value: site } = siteRef.current;
       const { value: rating } = ratingRef.current;
+      const HasTheValueChanged = HasPlacesToShowChange(PlacesToShow);
       if (
         Name === document.Name &&
         description === document.description &&
@@ -170,7 +180,8 @@ function Edit({ NavRoute }) {
         rating === document.rating &&
         site === document.site &&
         firstImg === firstDocumentImg &&
-        secondImg === secondDocumentImg
+        secondImg === secondDocumentImg &&
+        !HasTheValueChanged
       ) {
         submitRef.current.classList.add(style.shake);
         setTimeout(() => submitRef.current.classList.remove(style.shake), 200);
@@ -188,7 +199,7 @@ function Edit({ NavRoute }) {
           site,
           rating,
           id,
-          PlacesToShow,
+          PlacesToShow: [...PlacesToShow],
         });
         const docRef = doc(db, "places", id);
         setDoc(docRef, {
@@ -201,7 +212,7 @@ function Edit({ NavRoute }) {
           site,
           rating,
           id,
-          PlacesToShow,
+          PlacesToShow: [...PlacesToShow],
         });
         push("/places/");
       } catch (error) {
@@ -219,6 +230,7 @@ function Edit({ NavRoute }) {
       document.rating,
       document.phoneNum,
       document.PlacesToShow.length,
+      PlacesToShow.length,
       firstDocumentImg,
       secondDocumentImg,
       locationRef.current,
@@ -327,8 +339,7 @@ function Edit({ NavRoute }) {
                 فنادق
                 <input
                   type={"checkbox"}
-                  value={"hotels"}
-                  data-translatedvalue={"فنادق"}
+                  value={"فنادق"}
                   onChange={handleInputChecked}
                 />
               </li>
@@ -336,8 +347,7 @@ function Edit({ NavRoute }) {
                 مطاعم
                 <input
                   type={"checkbox"}
-                  value={"restaurants"}
-                  data-translatedvalue={"مطاعم"}
+                  value={"مطاعم"}
                   onChange={handleInputChecked}
                 />
               </li>
@@ -345,8 +355,31 @@ function Edit({ NavRoute }) {
                 عناوين مهمة
                 <input
                   type={"checkbox"}
-                  value={"Imp"}
-                  data-translatedvalue={"عناوين مهمة"}
+                  value={"عناوين مهمة"}
+                  onChange={handleInputChecked}
+                />
+              </li>
+              <li>
+                ترفيه
+                <input
+                  type={"checkbox"}
+                  value={"ترفيه"}
+                  onChange={handleInputChecked}
+                />
+              </li>
+              <li>
+                سياحة
+                <input
+                  type={"checkbox"}
+                  value={"سياحة"}
+                  onChange={handleInputChecked}
+                />
+              </li>
+              <li>
+                تنقل
+                <input
+                  type={"checkbox"}
+                  value={"تنقل"}
                   onChange={handleInputChecked}
                 />
               </li>

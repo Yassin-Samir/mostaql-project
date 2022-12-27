@@ -1,6 +1,11 @@
 import { MainPage } from "../../../components";
 const Hotels = () => (
-  <MainPage NavRoute={"فنادق"} title={"hotels"} collectionName={"hotels"} />
+  <MainPage
+    NavRoute={"فنادق"}
+    PlacesType={"فنادق"}
+    title={"hotels"}
+    collectionName={"places"}
+  />
 );
 
 export default Hotels;

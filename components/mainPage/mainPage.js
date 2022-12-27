@@ -2,24 +2,26 @@
 import { useContext, useEffect, useMemo, memo } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { collection } from "firebase/firestore";
+import { collection, where, query } from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import { FirebaseAppContext } from "../../pages/_app";
 import { RouteContext } from "../../contexts";
 import { Place } from "../index";
-function MainPage({ NavRoute, title }) {
+function MainPage({ collectionName, NavRoute, title, PlacesType }) {
   const { isReady, pathname } = useRouter();
   const { editRoute } = useContext(RouteContext);
   const { app, db } = useContext(FirebaseAppContext);
   useEffect(() => editRoute(NavRoute), []);
-  const placesRef = useMemo(() => {
+  const PlacesQuery = useMemo(() => {
     if (!isReady || !app || !db) return;
-    const placesRef = collection(db, "places");
-    return placesRef;
+    const placesRef = collection(db, collectionName || "places");
+    const PlacesQuery = query(
+      placesRef,
+      where("PlacesToShow", "array-contains", { key: PlacesType })
+    );
+    return PlacesQuery;
   }, [isReady, app._automaticDataCollectionEnabled]);
-  const [places] = useCollectionData(placesRef);
-  console.log(places);
-  console.log(NavRoute);
+  const [places] = useCollectionData(PlacesQuery);
   console.log(places);
   return (
     <>

@@ -1,4 +1,4 @@
-import { CreatePlacePage, LinkComponent } from "../../components";
+import { CreatePlacePage } from "../../components";
 const CreatePage = () => (
   <CreatePlacePage NavRoute={"مكان"} collectionName="places" />
 );

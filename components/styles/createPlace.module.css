@@ -116,7 +116,8 @@
   -moz-transition: height 0.5s linear;
   -ms-transition: height 0.5s linear;
   -o-transition: height 0.5s linear;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: scroll;
   flex-wrap: wrap;
 }
 .departmentsUl li {

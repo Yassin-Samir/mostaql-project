@@ -50,16 +50,11 @@ function Create({ NavRoute }) {
     Reader.readAsDataURL(target.files[0]);
   }, []);
   const handleInputChecked = useCallback(
-    ({
-      target: {
-        dataset: { translatedvalue },
-        checked,
-      },
-    }) =>
+    ({ target: { value, checked } }) =>
       setPlacesToShow((prev) =>
         checked
-          ? [...prev, { key: translatedvalue }]
-          : [...prev.filter((i) => i.key !== translatedvalue)]
+          ? [...prev, { key: value }]
+          : [...prev.filter((i) => i.key !== value)]
       ),
     []
   );
@@ -223,20 +218,18 @@ function Create({ NavRoute }) {
               } `}
             >
               <li>
-              فنادق
+                فنادق
                 <input
                   type={"checkbox"}
-                  value={"hotels"}
-                  data-translatedvalue={"فنادق"}
+                  value={"فنادق"}
                   onChange={handleInputChecked}
                 />
               </li>
               <li>
-              مطاعم
+                مطاعم
                 <input
                   type={"checkbox"}
-                  value={"restaurants"}
-                  data-translatedvalue={"مطاعم"}
+                  value={"مطاعم"}
                   onChange={handleInputChecked}
                 />
               </li>
@@ -244,8 +237,31 @@ function Create({ NavRoute }) {
                 عناوين مهمة
                 <input
                   type={"checkbox"}
-                  value={"Imp"}
-                  data-translatedvalue={"عناوين مهمة"}
+                  value={"عناوين مهمة"}
+                  onChange={handleInputChecked}
+                />
+              </li>
+              <li>
+                ترفيه
+                <input
+                  type={"checkbox"}
+                  value={"ترفيه"}
+                  onChange={handleInputChecked}
+                />
+              </li>
+              <li>
+                سياحة
+                <input
+                  type={"checkbox"}
+                  value={"سياحة"}
+                  onChange={handleInputChecked}
+                />
+              </li>
+              <li>
+                تنقل
+                <input
+                  type={"checkbox"}
+                  value={"تنقل"}
                   onChange={handleInputChecked}
                 />
               </li>

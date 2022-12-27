@@ -4,6 +4,7 @@ const EntertainmentPage = () => (
     NavRoute={"تنقل"}
     title={"transport"}
     collectionName={"transport"}
+    PlacesType={"تنقل"}
   />
 );
 
