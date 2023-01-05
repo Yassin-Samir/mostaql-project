@@ -15,6 +15,7 @@ function MainPage({ collectionName, NavRoute, title, PlacesType }) {
   const PlacesQuery = useMemo(() => {
     if (!isReady || !app || !db) return;
     const placesRef = collection(db, collectionName || "places");
+    console.log(PlacesType);
     return PlacesType
       ? query(
           placesRef,
@@ -29,7 +30,7 @@ function MainPage({ collectionName, NavRoute, title, PlacesType }) {
       <Head>
         <title>{title}</title>
       </Head>
-      {places && places.map((i, ind) => <Place {...i} key={ind + 1} />)}
+      {places && places.map((i, ind) => <Place {...i} collectionName={collectionName} key={ind + 1} />)}
     </>
   );
 }

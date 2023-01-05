@@ -3,7 +3,7 @@ const EntertainmentPage = () => (
   <MainPage
     NavRoute={"تنقل"}
     title={"transport"}
-    collectionName={"transport"}
+    collectionName={"places"}
     PlacesType={"تنقل"}
   />
 );

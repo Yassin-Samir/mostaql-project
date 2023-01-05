@@ -6,19 +6,18 @@ import { doc, deleteDoc } from "firebase/firestore";
 import style from "./place.module.css";
 import Image from "next/image";
 import More from "./more.png";
-function Place({ Img, Location, Name, id }) {
+function Place({ Img, Location, Name, id,collectionName }) {
   const [option, setOption] = useState(false);
   const { db } = useContext(FirebaseAppContext);
   const { push } = useRouter();
   const path = usePathname();
   const SetOptionFunction = useCallback((prev) => !prev, []);
-  console.log(path.replace(/([^/?]+)\/+/, "").replace(/\//, ""));
   const DeleteDoc = useCallback(
     (e) => {
       e.preventDefault();
       try {
         deleteDoc(
-          doc(db, path.replace(/([^/?]+)\/+/, "").replace(/\//, ""), id)
+          doc(db,collectionName || path.replace(/([^/?]+)\/+/, ""), id)
         );
         setOption(SetOptionFunction);
       } catch (error) {
