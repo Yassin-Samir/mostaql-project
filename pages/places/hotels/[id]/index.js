@@ -15,7 +15,6 @@ export async function getServerSideProps({ params }) {
   const docRef = doc(db, "places", id);
   const docSnapShot = await getDoc(docRef);
   const docData = docSnapShot.data();
-  console.log(docData);
   return {
     props: { docData: docData || null },
   };
