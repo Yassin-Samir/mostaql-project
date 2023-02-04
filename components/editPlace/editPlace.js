@@ -1,4 +1,4 @@
-import { setDoc, doc, getDoc } from "firebase/firestore";
+import { setDoc, doc } from "firebase/firestore";
 import {
   useContext,
   useCallback,
@@ -6,6 +6,7 @@ import {
   useEffect,
   createRef,
   useMemo,
+  useLayoutEffect,
 } from "react";
 import { Pagination } from "swiper";
 import "swiper/css";
@@ -18,7 +19,7 @@ import Head from "next/head";
 import Image from "next/image";
 import PreviewImg from "../public/-Insert_image_here-.svg.png";
 import style from "../styles/createPlace.module.css";
-function Edit({ NavRoute }) {
+function Edit({ NavRoute, DocData }) {
   const [Images, setImages] = useState([PreviewImg, PreviewImg]);
   const [PlacesToShow, setPlacesToShow] = useState([]);
   const [Triggered, setTriggered] = useState(false);
@@ -35,89 +36,50 @@ function Edit({ NavRoute }) {
     PlacesToShow: [],
     id: "",
   });
-  const {
-    query: { id },
-    isReady,
-    push,
-  } = useRouter();
-  const [firstDocumentImg, secondDocumentImg] = document.Img;
-  const pagination = {
-    clickable: true,
-    renderBullet: (index, className) => `<span class=${className}></span>`,
-  };
+  const [RecheckingDoc, setRecheckingDoc] = useState({
+    Img: ["", ""],
+    Name: "",
+    description: "",
+    location: "",
+    bookingSite: "",
+    phoneNum: "",
+    site: "",
+    rating: "",
+    PlacesToShow: [],
+    id: "",
+  });
+  const { push } = useRouter();
+  const pagination = useMemo(
+    () => ({
+      clickable: true,
+      renderBullet: (index, className) => `<span class=${className}></span>`,
+    }),
+    []
+  );
   const { db } = useContext(FirebaseAppContext);
   const { editRoute } = useContext(RouteContext);
-  const NameRef = useMemo(() => createRef(), []);
-  const descriptionRef = useMemo(() => createRef(), []);
-  const locationRef = useMemo(() => createRef(), []);
-  const bookingSiteRef = useMemo(() => createRef(), []);
-  const phoneNumRef = useMemo(() => createRef(), []);
-  const siteRef = useMemo(() => createRef(), []);
-  const ratingRef = useMemo(() => createRef(), []);
   const submitRef = useMemo(() => createRef(), []);
-
+  const { Name, description, location, bookingSite, phoneNum, site, rating } =
+    document;
+  const [firstDocumentImg, secondDocumentImg] = RecheckingDoc.Img;
+  useLayoutEffect(() => {
+    if (!DocData) push("/404");
+  }, []);
   useEffect(() => {
     editRoute(`${NavRoute} تعديل`);
-    if (
-      !isReady ||
-      !id ||
-      !(
-        NameRef ||
-        descriptionRef ||
-        locationRef ||
-        bookingSiteRef ||
-        phoneNumRef ||
-        siteRef ||
-        submitRef
-      ).current
-    )
-      return;
-    const documentRef = doc(db, "places", id);
-    (async () => {
-      const docSnap = await getDoc(documentRef);
-      const DocData = docSnap.data();
-      if (!DocData) push("/404");
-      const {
-        Img,
-        Name,
-        location,
-        description,
-        bookingSite,
-        phoneNum,
-        site,
-        rating,
-        PlacesToShow,
-      } = DocData;
-      setDocument({ ...DocData });
-      setImages(Img);
-      setPlacesToShow([...PlacesToShow]);
-      NameRef.current.value = Name;
-      descriptionRef.current.value = description;
-      locationRef.current.value = location;
-      bookingSiteRef.current.value = bookingSite;
-      phoneNumRef.current.value = phoneNum;
-      siteRef.current.value = site;
-      ratingRef.current.value = rating;
-      window.document.querySelectorAll("li input").forEach((ele) => {
-        console.log(!PlacesToShow.filter((i) => i.key === ele.value).length);
-        if (!PlacesToShow.filter((i) => i.key === ele.value).length) {
-          return;
-        }
-        ele.checked = true;
-      });
-    })();
-  }, [
-    isReady,
-    id,
-    NameRef.current,
-    submitRef.current,
-    locationRef.current,
-    bookingSiteRef.current,
-    phoneNumRef.current,
-    siteRef.current,
-    ratingRef.current,
-    submitRef.current,
-  ]);
+    if (!submitRef.current) return;
+    const { Img, PlacesToShow } = DocData;
+    setDocument({ ...DocData });
+    setRecheckingDoc({ ...DocData });
+    setImages(Img);
+    setPlacesToShow([...PlacesToShow]);
+    window.document.querySelectorAll("li input").forEach((ele) => {
+      if (!PlacesToShow.filter((i) => i.key === ele.value).length) {
+        return;
+      }
+      ele.checked = true;
+    });
+  }, [submitRef.current, DocData, NavRoute]);
   const HandleInputChange = useCallback(({ target }) => {
     if (!target.files.length) return;
     if (!target.files[0].name?.match(/\.jpe?g/)) {
@@ -143,7 +105,6 @@ function Edit({ NavRoute }) {
   );
   const HasPlacesToShowChange = useCallback(
     (placeToShow) => {
-      let state = false;
       if (
         placeToShow.length &&
         placeToShow.length !== document.PlacesToShow.length
@@ -153,32 +114,33 @@ function Edit({ NavRoute }) {
       for (let index = 0; index < placeToShow.length; index++) {
         const element = placeToShow[index];
         if (element.key === document.PlacesToShow[index].key) continue;
-        state = true;
-        break;
+        return true;
       }
-      return state;
+      return false;
     },
     [document.PlacesToShow.length]
   );
   const handleSubmit = useCallback(
     (e) => {
       e.preventDefault();
-      const { value: Name } = NameRef.current;
-      const { value: description } = descriptionRef.current;
-      const { value: location } = locationRef.current;
-      const { value: bookingSite } = bookingSiteRef.current;
-      const { value: phoneNum } = phoneNumRef.current;
-      const { value: site } = siteRef.current;
-      const { value: rating } = ratingRef.current;
+      const {
+        Name,
+        description,
+        location,
+        bookingSite,
+        phoneNum,
+        site,
+        rating,
+      } = document;
       const HasTheValueChanged = HasPlacesToShowChange(PlacesToShow);
       if (
-        Name === document.Name &&
-        description === document.description &&
-        location === document.location &&
-        bookingSite === document.bookingSite &&
-        phoneNum === document.phoneNum &&
-        rating === document.rating &&
-        site === document.site &&
+        Name === RecheckingDoc.Name &&
+        description === RecheckingDoc.description &&
+        location === RecheckingDoc.location &&
+        bookingSite === RecheckingDoc.bookingSite &&
+        phoneNum === RecheckingDoc.phoneNum &&
+        rating === RecheckingDoc.rating &&
+        site === RecheckingDoc.site &&
         firstImg === firstDocumentImg &&
         secondImg === secondDocumentImg &&
         !HasTheValueChanged
@@ -188,7 +150,7 @@ function Edit({ NavRoute }) {
         return;
       }
       try {
-        const { id } = document;
+        const { id } = RecheckingDoc;
         console.log({
           Img: Images,
           Name,
@@ -220,30 +182,41 @@ function Edit({ NavRoute }) {
       }
     },
     [
-      Images.length,
-      document.id,
+      Images,
+      PlacesToShow,
+      RecheckingDoc.Name,
+      RecheckingDoc.bookingSite,
+      RecheckingDoc.description,
+      RecheckingDoc.location,
+      RecheckingDoc.phoneNum,
+      RecheckingDoc.rating,
+      RecheckingDoc.site,
+      RecheckingDoc.id,
       document.Name,
-      document.location,
-      document.description,
       document.bookingSite,
-      document.site,
-      document.rating,
+      document.description,
+      document.location,
       document.phoneNum,
-      document.PlacesToShow.length,
-      PlacesToShow.length,
+      document.rating,
+      document.site,
+      document.id,
       firstDocumentImg,
-      secondDocumentImg,
-      locationRef.current,
-      NameRef.current,
-      descriptionRef.current,
-      bookingSiteRef.current,
-      siteRef.current,
-      ratingRef.current,
-      phoneNumRef.current,
-      submitRef.current,
       firstImg,
+      secondDocumentImg,
       secondImg,
     ]
+  );
+  const handleInputChange = useCallback(
+    ({
+      target: {
+        dataset: { name },
+        value,
+      },
+    }) => {
+      console.log("test");
+      setDocument((prev) => ({ ...prev, [name]: value }));
+    },
+    []
   );
   return (
     <>
@@ -298,19 +271,54 @@ function Edit({ NavRoute }) {
             </SwiperSlide>
           </Swiper>
           <label className="inputLabel">اسم المكان</label>
-          <input type={"text"} ref={NameRef} />
+          <input
+            type={"text"}
+            value={Name}
+            data-name="Name"
+            onChange={handleInputChange}
+          />
           <label className="inputLabel">الوصف</label>
-          <input type={"text"} ref={descriptionRef} />
+          <input
+            type={"text"}
+            value={description}
+            data-name="description"
+            onChange={handleInputChange}
+          />
           <label className="inputLabel">العنوان</label>
-          <input type={"text"} ref={locationRef} />
+          <input
+            type={"text"}
+            value={location}
+            data-name="location"
+            onChange={handleInputChange}
+          />
           <label className="inputLabel">booking رابط موقع</label>
-          <input type={"text"} ref={bookingSiteRef} />
+          <input
+            type={"text"}
+            value={bookingSite}
+            data-name="bookingSite"
+            onChange={handleInputChange}
+          />
           <label className="inputLabel">رقم الهاتف</label>
-          <input type={"text"} ref={phoneNumRef} />
+          <input
+            type={"text"}
+            value={phoneNum}
+            data-name="phoneNum"
+            onChange={handleInputChange}
+          />
           <label className="inputLabel">رابط الموقع</label>
-          <input type={"text"} ref={siteRef} />
+          <input
+            type={"text"}
+            value={site}
+            data-name="site"
+            onChange={handleInputChange}
+          />
           <label className="inputLabel">التقييم</label>
-          <input type={"text"} ref={ratingRef} />
+          <input
+            type={"text"}
+            value={rating}
+            data-name="rating"
+            onChange={handleInputChange}
+          />
           <label className="inputLabel">القسم</label>
           <div className={style.dropDown}>
             <div
