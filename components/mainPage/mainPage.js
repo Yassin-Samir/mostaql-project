@@ -24,7 +24,7 @@ function MainPage({ collectionName, NavRoute, title, PlacesType }) {
       : placesRef;
   }, [isReady, app._automaticDataCollectionEnabled]);
   const [places] = useCollectionData(PlacesQuery);
-  console.log(places);
+  console.log('places',places);
   return (
     <>
       <Head>

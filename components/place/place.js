@@ -6,7 +6,7 @@ import { doc, deleteDoc } from "firebase/firestore";
 import style from "./place.module.css";
 import Image from "next/image";
 import More from "./more.png";
-function Place({ Img, Location, Name, id,collectionName }) {
+function Place({ Img, Location, Name, id, collectionName }) {
   const [option, setOption] = useState(false);
   const { db } = useContext(FirebaseAppContext);
   const { push } = useRouter();
@@ -17,7 +17,7 @@ function Place({ Img, Location, Name, id,collectionName }) {
       e.preventDefault();
       try {
         deleteDoc(
-          doc(db,collectionName || path.replace(/([^/?]+)\/+/, ""), id)
+          doc(db, collectionName || path.replace(/([^/?]+)\/+/, ""), id)
         );
         setOption(SetOptionFunction);
       } catch (error) {
@@ -27,6 +27,7 @@ function Place({ Img, Location, Name, id,collectionName }) {
     },
     [id]
   );
+  console.log("Img[0] || Img", Img[0] || Img);
   return (
     <div className={style.place}>
       <Image
@@ -49,7 +50,7 @@ function Place({ Img, Location, Name, id,collectionName }) {
       <div className={style.information}>
         <h6>{Name}</h6>
         <Image
-          src={Img[0].length > 1 ? Img[0] : Img}
+          src={typeof Img === "object" ? Img[0] : Img}
           alt="place Img"
           width={100}
           height={100}

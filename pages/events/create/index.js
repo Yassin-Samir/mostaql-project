@@ -32,6 +32,7 @@ function CreateEvent() {
     const Reader = new FileReader();
     Reader.onload = ({ target: { result } }) => {
       imgPreviewerRef.current.style.display = "none";
+      console.log('result',result);
       setImg(result);
       ImgRef.current.style.display = "block";
     };
